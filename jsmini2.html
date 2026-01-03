@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Mini Projects 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        h2 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-top: 40px;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+        input {
+            padding: 5px;
+            width: 150px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            margin: 2px;
+        }
+        .remove-btn {
+            background-color: #f44336;
+        }
+        .borrow-btn {
+            background-color: #2196F3;
+        }
+        .return-btn {
+            background-color: #FF9800;
+        }
+        hr {
+            margin: 40px 0;
+            border: 1px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>JS Mini Projects - Set 2</h1>
+
+    <!-- ==================== MINI PROJECT 1: Movie Booking System ==================== -->
+    <h2>Mini Project 1: Movie Booking System</h2>
+
+    <div class="result">
+        <h4>Available Movies:</h4>
+        <div id="movieList"></div>
+    </div>
+
+    <div class="input-group">
+        <label>Movie Name:</label>
+        <input type="text" id="movieName" placeholder="Enter movie name">
+    </div>
+
+    <button onclick="bookMovie()">Book Ticket</button>
+
+    <div id="bookingResult" class="result" style="display:none;"></div>
+
+    <script>
+        // ==================== MINI PROJECT 1: Movie Booking System ====================
+        let availableMovies = ['Avengers', 'Spider-Man', 'Batman', 'Superman', 'Iron Man'];
+
+        function displayMovies() {
+            let movieListDiv = document.getElementById('movieList');
+            let html = '<ul>';
+            availableMovies.forEach(movie => {
+                html += `<li>${movie}</li>`;
+            });
+            html += '</ul>';
+            movieListDiv.innerHTML = html;
+        }
+
+        function bookMovie() {
+            let movieInput = document.getElementById('movieName');
+            let movieName = movieInput.value.trim();
+            let resultDiv = document.getElementById('bookingResult');
+
+            if (movieName === '') {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '<p class="error">Please enter a movie name</p>';
+                return;
+            }
+
+            // Check if movie exists (case-insensitive)
+            let movieExists = availableMovies.some(
+                movie => movie.toLowerCase() === movieName.toLowerCase()
+            );
+
+            resultDiv.style.display = 'block';
+
+            if (movieExists) {
+                resultDiv.innerHTML = `<p class="success">Ticket booked for "${movieName}"!</p>`;
+            } else {
+                resultDiv.innerHTML = `<p class="error">Movie not available</p>`;
+            }
+
+            movieInput.value = '';
+        }
+
+        // Initialize movie list on page load
+        displayMovies();
+    </script>
+
+    <hr>
+
+    <!-- ==================== MINI PROJECT 2: Product Inventory System ==================== -->
+    <h2>Mini Project 2: Product Inventory System</h2>
+
+    <div class="input-group">
+        <label>Product Name:</label>
+        <input type="text" id="productName" placeholder="Enter product name">
+    </div>
+    <div class="input-group">
+        <label>Quantity:</label>
+        <input type="number" id="productQty" min="1" value="1" placeholder="Quantity">
+    </div>
+
+    <button onclick="addProduct()">Add Product</button>
+
+    <div id="inventoryDisplay" class="result">
+        <h4>Current Inventory:</h4>
+        <p>No products in inventory.</p>
+    </div>
+
+    <script>
+        // ==================== MINI PROJECT 2: Product Inventory System ====================
+        let inventory = [
+            { name: 'Laptop', quantity: 10 },
+            { name: 'Mouse', quantity: 25 },
+            { name: 'Keyboard', quantity: 15 }
+        ];
+
+        function addProduct() {
+            let nameInput = document.getElementById('productName');
+            let qtyInput = document.getElementById('productQty');
+
+            let productName = nameInput.value.trim();
+            let quantity = Number(qtyInput.value);
+
+            if (productName === '') {
+                alert('Please enter a product name');
+                return;
+            }
+
+            if (quantity <= 0) {
+                quantity = 1;
+            }
+
+            // Check if product already exists
+            let existingProduct = inventory.find(
+                p => p.name.toLowerCase() === productName.toLowerCase()
+            );
+
+            if (existingProduct) {
+                existingProduct.quantity += quantity;
+            } else {
+                inventory.push({ name: productName, quantity: quantity });
+            }
+
+            nameInput.value = '';
+            qtyInput.value = '1';
+            displayInventory();
+        }
+
+        function removeProduct(productName) {
+            inventory = inventory.filter(p => p.name !== productName);
+            displayInventory();
+        }
+
+        function displayInventory() {
+            let container = document.getElementById('inventoryDisplay');
+
+            if (inventory.length === 0) {
+                container.innerHTML = '<h4>Current Inventory:</h4><p>No products in inventory.</p>';
+                return;
+            }
+
+            let html = '<h4>Current Inventory:</h4>';
+            html += '<table>';
+            html += '<tr><th>Product</th><th>Quantity</th><th>Action</th></tr>';
+
+            inventory.forEach(product => {
+                html += `<tr>
+                    <td>${product.name}</td>
+                    <td>${product.quantity}</td>
+                    <td><button class="action-btn remove-btn" onclick="removeProduct('${product.name}')">Remove</button></td>
+                </tr>`;
+            });
+
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        // Initialize inventory display
+        displayInventory();
+    </script>
+
+    <hr>
+
+    <!-- ==================== MINI PROJECT 3: Library Book Tracker ==================== -->
+    <h2>Mini Project 3: Library Book Tracker</h2>
+
+    <div id="libraryDisplay" class="result">
+        <h4>Library Books:</h4>
+    </div>
+
+    <div id="borrowedDisplay" class="result">
+        <h4>Borrowed Books:</h4>
+        <p>No books are currently borrowed.</p>
+    </div>
+
+    <script>
+        // ==================== MINI PROJECT 3: Library Book Tracker ====================
+        let library = [
+            { title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', isBorrowed: false },
+            { title: '1984', author: 'George Orwell', isBorrowed: false },
+            { title: 'To Kill a Mockingbird', author: 'Harper Lee', isBorrowed: true },
+            { title: 'Pride and Prejudice', author: 'Jane Austen', isBorrowed: false },
+            { title: 'The Catcher in the Rye', author: 'J.D. Salinger', isBorrowed: true }
+        ];
+
+        function borrowBook(title) {
+            let book = library.find(b => b.title === title);
+            if (book) {
+                book.isBorrowed = true;
+                displayLibrary();
+                displayBorrowedBooks();
+            }
+        }
+
+        function returnBook(title) {
+            let book = library.find(b => b.title === title);
+            if (book) {
+                book.isBorrowed = false;
+                displayLibrary();
+                displayBorrowedBooks();
+            }
+        }
+
+        function displayLibrary() {
+            let container = document.getElementById('libraryDisplay');
+
+            let html = '<h4>Library Books:</h4>';
+            html += '<table>';
+            html += '<tr><th>Title</th><th>Author</th><th>Status</th><th>Action</th></tr>';
+
+            library.forEach(book => {
+                let status = book.isBorrowed ? '<span class="error">Borrowed</span>' : '<span class="success">Available</span>';
+                let actionBtn = book.isBorrowed
+                    ? `<button class="action-btn return-btn" onclick="returnBook('${book.title}')">Return</button>`
+                    : `<button class="action-btn borrow-btn" onclick="borrowBook('${book.title}')">Borrow</button>`;
+
+                html += `<tr>
+                    <td>${book.title}</td>
+                    <td>${book.author}</td>
+                    <td>${status}</td>
+                    <td>${actionBtn}</td>
+                </tr>`;
+            });
+
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function displayBorrowedBooks() {
+            let container = document.getElementById('borrowedDisplay');
+            let borrowedBooks = library.filter(book => book.isBorrowed);
+
+            if (borrowedBooks.length === 0) {
+                container.innerHTML = '<h4>Borrowed Books:</h4><p>No books are currently borrowed.</p>';
+                return;
+            }
+
+            let html = '<h4>Borrowed Books:</h4>';
+            html += '<ul>';
+            borrowedBooks.forEach(book => {
+                html += `<li><strong>${book.title}</strong> by ${book.author}</li>`;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+
+        // Initialize library display
+        displayLibrary();
+        displayBorrowedBooks();
+    </script>
+
+    <hr>
+
+    <!-- ==================== MINI PROJECT 4: Employee Management System ==================== -->
+    <h2>Mini Project 4: Employee Management System</h2>
+
+    <div class="input-group">
+        <label>Employee Name:</label>
+        <input type="text" id="empName" placeholder="Enter name">
+    </div>
+    <div class="input-group">
+        <label>Role:</label>
+        <input type="text" id="empRole" placeholder="Enter role">
+    </div>
+    <div class="input-group">
+        <label>Salary ($):</label>
+        <input type="number" id="empSalary" min="0" placeholder="Enter salary">
+    </div>
+
+    <button onclick="addEmployee()">Add Employee</button>
+
+    <div id="employeeDisplay" class="result">
+        <h4>Employee List:</h4>
+    </div>
+
+    <div id="salaryStats" class="result">
+        <h4>Salary Statistics:</h4>
+    </div>
+
+    <div id="rolesList" class="result">
+        <h4>Company Roles:</h4>
+    </div>
+
+    <script>
+        // ==================== MINI PROJECT 4: Employee Management System ====================
+        let employees = [
+            { name: 'John Smith', role: 'Developer', salary: 75000 },
+            { name: 'Sarah Johnson', role: 'Designer', salary: 65000 },
+            { name: 'Mike Brown', role: 'Developer', salary: 80000 },
+            { name: 'Emily Davis', role: 'Manager', salary: 95000 }
+        ];
+
+        function addEmployee() {
+            let nameInput = document.getElementById('empName');
+            let roleInput = document.getElementById('empRole');
+            let salaryInput = document.getElementById('empSalary');
+
+            let name = nameInput.value.trim();
+            let role = roleInput.value.trim();
+            let salary = Number(salaryInput.value);
+
+            if (name === '') {
+                alert('Please enter employee name');
+                return;
+            }
+            if (role === '') {
+                alert('Please enter employee role');
+                return;
+            }
+            if (salary <= 0) {
+                alert('Please enter a valid salary');
+                return;
+            }
+
+            employees.push({ name: name, role: role, salary: salary });
+
+            // Clear inputs
+            nameInput.value = '';
+            roleInput.value = '';
+            salaryInput.value = '';
+
+            displayEmployees();
+            displaySalaryStats();
+            displayRoles();
+        }
+
+        function removeEmployee(empName) {
+            employees = employees.filter(emp => emp.name !== empName);
+            displayEmployees();
+            displaySalaryStats();
+            displayRoles();
+        }
+
+        function calculateAverageSalary() {
+            if (employees.length === 0) return 0;
+            let totalSalary = employees.reduce((sum, emp) => sum + emp.salary, 0);
+            return totalSalary / employees.length;
+        }
+
+        function getAllRoles() {
+            // Get unique roles using Set
+            let roles = employees.map(emp => emp.role);
+            return [...new Set(roles)];
+        }
+
+        function displayEmployees() {
+            let container = document.getElementById('employeeDisplay');
+
+            if (employees.length === 0) {
+                container.innerHTML = '<h4>Employee List:</h4><p>No employees in the system.</p>';
+                return;
+            }
+
+            let html = '<h4>Employee List:</h4>';
+            html += '<table>';
+            html += '<tr><th>Name</th><th>Role</th><th>Salary</th><th>Action</th></tr>';
+
+            employees.forEach(emp => {
+                html += `<tr>
+                    <td>${emp.name}</td>
+                    <td>${emp.role}</td>
+                    <td>$${emp.salary.toLocaleString()}</td>
+                    <td><button class="action-btn remove-btn" onclick="removeEmployee('${emp.name}')">Remove</button></td>
+                </tr>`;
+            });
+
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function displaySalaryStats() {
+            let container = document.getElementById('salaryStats');
+            let avgSalary = calculateAverageSalary();
+
+            if (employees.length === 0) {
+                container.innerHTML = '<h4>Salary Statistics:</h4><p>No employees to calculate.</p>';
+                return;
+            }
+
+            let totalSalary = employees.reduce((sum, emp) => sum + emp.salary, 0);
+
+            container.innerHTML = `
+                <h4>Salary Statistics:</h4>
+                <p><strong>Total Employees:</strong> ${employees.length}</p>
+                <p><strong>Total Salary:</strong> $${totalSalary.toLocaleString()}</p>
+                <p><strong>Average Salary:</strong> $${avgSalary.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+            `;
+        }
+
+        function displayRoles() {
+            let container = document.getElementById('rolesList');
+            let roles = getAllRoles();
+
+            if (roles.length === 0) {
+                container.innerHTML = '<h4>Company Roles:</h4><p>No roles defined.</p>';
+                return;
+            }
+
+            let html = '<h4>Company Roles:</h4><ul>';
+            roles.forEach(role => {
+                let count = employees.filter(emp => emp.role === role).length;
+                html += `<li>${role} (${count} employee${count > 1 ? 's' : ''})</li>`;
+            });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+
+        // Initialize employee displays
+        displayEmployees();
+        displaySalaryStats();
+        displayRoles();
+    </script>
+
+    <hr>
+
+    <!-- ==================== MINI PROJECT 5: Product Inventory System ==================== -->
+    <h2>Mini Project 5: Product Inventory System</h2>
+
+    <div class="input-group">
+        <label>Product Name:</label>
+        <input type="text" id="prodName" placeholder="Enter product name">
+    </div>
+    <div class="input-group">
+        <label>Price ($):</label>
+        <input type="number" id="prodPrice" min="0" step="0.01" placeholder="Enter price">
+    </div>
+    <div class="input-group">
+        <label>Stock Quantity:</label>
+        <input type="number" id="prodStock" min="0" value="1" placeholder="Enter quantity">
+    </div>
+
+    <button onclick="addProductToInventory()">Add Product</button>
+
+    <div id="productInventoryDisplay" class="result">
+        <h4>Product Inventory:</h4>
+    </div>
+
+    <div id="inventoryStats" class="result">
+        <h4>Inventory Summary:</h4>
+    </div>
+
+    <script>
+        // ==================== MINI PROJECT 5: Product Inventory System ====================
+        let productInventory = [
+            { name: 'Laptop', price: 999.99, stock: 15 },
+            { name: 'Mouse', price: 29.99, stock: 50 },
+            { name: 'Keyboard', price: 79.99, stock: 30 },
+            { name: 'Monitor', price: 299.99, stock: 20 }
+        ];
+
+        function addProductToInventory() {
+            let nameInput = document.getElementById('prodName');
+            let priceInput = document.getElementById('prodPrice');
+            let stockInput = document.getElementById('prodStock');
+
+            let name = nameInput.value.trim();
+            let price = Number(priceInput.value);
+            let stock = Number(stockInput.value);
+
+            if (name === '') {
+                alert('Please enter product name');
+                return;
+            }
+            if (price <= 0) {
+                alert('Please enter a valid price');
+                return;
+            }
+            if (stock < 0) {
+                stock = 0;
+            }
+
+            // Check if product exists, update stock if so
+            let existingProduct = productInventory.find(
+                p => p.name.toLowerCase() === name.toLowerCase()
+            );
+
+            if (existingProduct) {
+                existingProduct.stock += stock;
+                existingProduct.price = price; // Update price
+            } else {
+                productInventory.push({ name: name, price: price, stock: stock });
+            }
+
+            // Clear inputs
+            nameInput.value = '';
+            priceInput.value = '';
+            stockInput.value = '1';
+
+            displayProductInventory();
+            displayInventoryStats();
+        }
+
+        function removeProductFromInventory(productName) {
+            productInventory = productInventory.filter(p => p.name !== productName);
+            displayProductInventory();
+            displayInventoryStats();
+        }
+
+        function displayProductInventory() {
+            let container = document.getElementById('productInventoryDisplay');
+
+            if (productInventory.length === 0) {
+                container.innerHTML = '<h4>Product Inventory:</h4><p>No products in inventory.</p>';
+                return;
+            }
+
+            let html = '<h4>Product Inventory:</h4>';
+            html += '<table>';
+            html += '<tr><th>Product</th><th>Price</th><th>Stock</th><th>Value</th><th>Action</th></tr>';
+
+            productInventory.forEach(product => {
+                let value = product.price * product.stock;
+                let stockStatus = product.stock < 10 ? 'style="color:red;"' : '';
+                html += `<tr>
+                    <td>${product.name}</td>
+                    <td>$${product.price.toFixed(2)}</td>
+                    <td ${stockStatus}>${product.stock}</td>
+                    <td>$${value.toFixed(2)}</td>
+                    <td><button class="action-btn remove-btn" onclick="removeProductFromInventory('${product.name}')">Remove</button></td>
+                </tr>`;
+            });
+
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function displayInventoryStats() {
+            let container = document.getElementById('inventoryStats');
+
+            if (productInventory.length === 0) {
+                container.innerHTML = '<h4>Inventory Summary:</h4><p>No products to summarize.</p>';
+                return;
+            }
+
+            let totalProducts = productInventory.length;
+            let totalStock = productInventory.reduce((sum, p) => sum + p.stock, 0);
+            let totalValue = productInventory.reduce((sum, p) => sum + (p.price * p.stock), 0);
+            let lowStockItems = productInventory.filter(p => p.stock < 10);
+
+            let html = `
+                <h4>Inventory Summary:</h4>
+                <p><strong>Total Products:</strong> ${totalProducts}</p>
+                <p><strong>Total Items in Stock:</strong> ${totalStock}</p>
+                <p><strong>Total Inventory Value:</strong> $${totalValue.toFixed(2)}</p>
+            `;
+
+            if (lowStockItems.length > 0) {
+                html += `<p class="error"><strong>Low Stock Alert:</strong> ${lowStockItems.map(p => p.name).join(', ')}</p>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Initialize product inventory display
+        displayProductInventory();
+        displayInventoryStats();
+    </script>
+
+    <hr>
+
+    <!-- ==================== MINI PROJECT 6: Student Record Management System ==================== -->
+    <h2>Mini Project 6: Student Record Management System</h2>
+
+    <div class="input-group">
+        <label>Student Name:</label>
+        <input type="text" id="studentName" placeholder="Enter name">
+    </div>
+    <div class="input-group">
+        <label>Age:</label>
+        <input type="number" id="studentAge" min="1" max="100" placeholder="Enter age">
+    </div>
+    <div class="input-group">
+        <label>Marks:</label>
+        <input type="number" id="studentMarks" min="0" max="100" placeholder="Enter marks (0-100)">
+    </div>
+
+    <button onclick="addStudent()">Add Student</button>
+
+    <div id="studentDisplay" class="result">
+        <h4>Student Records:</h4>
+    </div>
+
+    <div id="classStats" class="result">
+        <h4>Class Statistics:</h4>
+    </div>
+
+    <script>
+        // ==================== MINI PROJECT 6: Student Record Management System ====================
+        let students = [
+            { name: 'Alice Johnson', age: 18, marks: 85 },
+            { name: 'Bob Smith', age: 17, marks: 72 },
+            { name: 'Charlie Brown', age: 18, marks: 91 },
+            { name: 'Diana Ross', age: 17, marks: 68 },
+            { name: 'Edward Lee', age: 19, marks: 78 }
+        ];
+
+        function addStudent() {
+            let nameInput = document.getElementById('studentName');
+            let ageInput = document.getElementById('studentAge');
+            let marksInput = document.getElementById('studentMarks');
+
+            let name = nameInput.value.trim();
+            let age = Number(ageInput.value);
+            let marks = Number(marksInput.value);
+
+            if (name === '') {
+                alert('Please enter student name');
+                return;
+            }
+            if (age <= 0 || age > 100) {
+                alert('Please enter a valid age');
+                return;
+            }
+            if (marks < 0 || marks > 100) {
+                alert('Please enter valid marks (0-100)');
+                return;
+            }
+
+            students.push({ name: name, age: age, marks: marks });
+
+            // Clear inputs
+            nameInput.value = '';
+            ageInput.value = '';
+            marksInput.value = '';
+
+            displayStudents();
+            displayClassStats();
+        }
+
+        function removeStudent(studentName) {
+            students = students.filter(s => s.name !== studentName);
+            displayStudents();
+            displayClassStats();
+        }
+
+        function calculateAverageMarks() {
+            if (students.length === 0) return 0;
+            let totalMarks = 0;
+            // Using loop to iterate over student records
+            for (let i = 0; i < students.length; i++) {
+                totalMarks += students[i].marks;
+            }
+            return totalMarks / students.length;
+        }
+
+        function getGrade(marks) {
+            if (marks >= 90) return 'A';
+            if (marks >= 75) return 'B';
+            if (marks >= 50) return 'C';
+            return 'F';
+        }
+
+        function displayStudents() {
+            let container = document.getElementById('studentDisplay');
+
+            if (students.length === 0) {
+                container.innerHTML = '<h4>Student Records:</h4><p>No students in the system.</p>';
+                return;
+            }
+
+            let html = '<h4>Student Records:</h4>';
+            html += '<table>';
+            html += '<tr><th>Name</th><th>Age</th><th>Marks</th><th>Grade</th><th>Action</th></tr>';
+
+            // Loop through students to display each record
+            for (let i = 0; i < students.length; i++) {
+                let student = students[i];
+                let grade = getGrade(student.marks);
+                let gradeColor = grade === 'F' ? 'color:red;' : (grade === 'A' ? 'color:green;' : '');
+
+                html += `<tr>
+                    <td>${student.name}</td>
+                    <td>${student.age}</td>
+                    <td>${student.marks}</td>
+                    <td style="${gradeColor}font-weight:bold;">${grade}</td>
+                    <td><button class="action-btn remove-btn" onclick="removeStudent('${student.name}')">Remove</button></td>
+                </tr>`;
+            }
+
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function displayClassStats() {
+            let container = document.getElementById('classStats');
+
+            if (students.length === 0) {
+                container.innerHTML = '<h4>Class Statistics:</h4><p>No students to calculate.</p>';
+                return;
+            }
+
+            let avgMarks = calculateAverageMarks();
+            let highestMarks = Math.max(...students.map(s => s.marks));
+            let lowestMarks = Math.min(...students.map(s => s.marks));
+            let passingStudents = students.filter(s => s.marks >= 50).length;
+
+            container.innerHTML = `
+                <h4>Class Statistics:</h4>
+                <p><strong>Total Students:</strong> ${students.length}</p>
+                <p><strong>Class Average:</strong> ${avgMarks.toFixed(2)}%</p>
+                <p><strong>Highest Marks:</strong> ${highestMarks}</p>
+                <p><strong>Lowest Marks:</strong> ${lowestMarks}</p>
+                <p><strong>Passing Students:</strong> ${passingStudents} / ${students.length}</p>
+            `;
+        }
+
+        // Initialize student displays
+        displayStudents();
+        displayClassStats();
+    </script>
+
+</body>
+</html>
